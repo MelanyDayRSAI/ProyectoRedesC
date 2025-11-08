@@ -1,0 +1,19 @@
+options {
+    directory "/var/cache/bind";
+
+    # Escucha en todas las interfaces
+    listen-on { any; };
+    listen-on-v6 { any; };
+
+    # Permitir consultas desde LAN y VPN
+    allow-query { any; };
+
+    recursion yes;
+
+    forwarders {
+        8.8.8.8;
+        8.8.4.4;
+    };
+
+    dnssec-validation auto;
+};

@@ -1,0 +1,22 @@
+; Contenido de ./bind/db.lab.local
+
+$TTL    604800
+@       IN      SOA     dns.lab.local. root.lab.local. (
+                             2025102201 ; Serial (Fecha + versión)
+                              604800    ; Refresh
+                               86400    ; Retry
+                             2419200    ; Expire
+                              604800 )  ; Negative Cache TTL
+;
+; Name Servers
+@       IN      NS      dns.lab.local.
+
+; A Records
+; Host/Servicio        Tipo    IP
+; ---------------      ----    -----------
+dns                     IN      A       10.8.0.254 
+web                     IN      A       192.168.10.20
+interno                 IN      A       192.168.10.20
+vpn                     IN      A       192.168.10.30
+public                  IN      CNAME   web.lab.local
+private                 IN      CNAME   web.lab.local

@@ -1,0 +1,68 @@
+version: "3.8"
+
+services:
+  bind:
+    image: internetsystemsconsortium/bind9:9.21
+    container_name: bind
+    volumes:
+      - ./bind:/etc/bind:ro
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    networks:
+      servers_net:
+        ipv4_address: 192.168.10.10
+    restart: unless-stopped
+
+  web:
+    image: nginx:stable
+    container_name: web
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d:ro
+      - ./nginx/html_public:/var/www/public:ro
+      - ./nginx/html_private:/var/www/private:ro
+    dns:
+      - 192.168.10.10
+    networks:
+      servers_net:
+        ipv4_address: 192.168.10.20
+    restart: unless-stopped
+
+  wg-easy:
+    image: ghcr.io/wg-easy/wg-easy:15
+    container_name: wg-easy
+    environment:
+      - LANG=en
+      - PORT=51821
+      - WG_PORT=51820
+      - WG_HOST=${WG_HOST:-192.168.1.103}
+      - WG_DEFAULT_DNS=192.168.10.10
+      - INIT_USERNAME=${WG_USERNAME:-admin}
+      - INIT_PASSWORD=${WG_PASSWORD:-556677}
+      - INSECURE=true
+    volumes:
+      - ./wg-easy:/etc/wireguard
+      - /lib/modules:/lib/modules:ro
+    ports:
+      - "51820:51820/udp"
+      - "51821:51821/tcp"
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+    networks:
+      servers_net:
+        ipv4_address: 192.168.10.30
+    restart: unless-stopped
+
+networks:
+  servers_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.10.0/24

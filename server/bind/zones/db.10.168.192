@@ -1,0 +1,15 @@
+$TTL    604800
+@       IN      SOA dns.lab.local. root.lab.local. (
+                             2025102201 ; Serial
+                              604800    ; Refresh
+                               86400    ; Retry
+                             2419200    ; Expire
+                              604800 )  ; Negative Cache TTL
+
+@       IN      NS  dns.lab.local.
+
+; PTR Records (Inversa: IP a Nombre)
+254  IN  PTR dns.lab.local.
+20   IN  PTR web.lab.local.
+20   IN  PTR interno.lab.local.
+30   IN  PTR vpn.lab.local.
